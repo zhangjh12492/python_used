@@ -2,10 +2,12 @@ from head_first.chapter5.filter_speed_2 import sanitize
 
 
 class Athlete:
-    def __init__(self, a_name, a_dob=None, a_times=[], filename=''):
-        self.name = a_name
-        self.dob = a_dob
-        self.times = a_times
+    name = ''
+    dob = ''
+    times = []
+    filename = ''
+
+    def __init__(self, filename=''):
         self.filename = filename
 
     def top3(self):
@@ -16,16 +18,32 @@ class Athlete:
             with open(self.filename) as file:
                 data = file.readline()
             templ = data.strip().split(",")
-            self.times = templ[2:-1]
+            self.name = templ.pop(0)
+            self.dob = templ.pop(0)
+            self.times = templ
             return self
         except IOError as ioerr:
             print('File error:' + str(ioerr))
             return None
 
+    def add_time(self,time_value):
+        self.times.append(time_value)
 
-sarah = Athlete('Sarah Sweeney', '2002-6-17', ['2:58', '2.58', '1.56'], 'sarah.txt')
+    def add_times(self,list_of_times):
+        self.times.extend(list_of_times)
+
+
+
+sarah = Athlete('sarah.txt')
 james = Athlete('James Jones')
 print(type(sarah))
 print(type(james))
 
 print(sarah.get_coach_data().top3())
+print(sarah.get_coach_data().name + "'s fastest times are: " +
+      str(sarah.get_coach_data().top3()))
+
+sarah.add_time('1.24')
+print(sorted(sarah.times))
+sarah.add_times(['1.35','2.45'])
+print(sorted(sarah.times))
